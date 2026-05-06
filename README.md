@@ -35,6 +35,8 @@ astra-loom/
 
 ## Usage Example
 
+### Low-Level API (Astronomy Engine)
+
 ```kotlin
 // Create astronomy engine
 val engine = AstronomyEngine(
@@ -63,10 +65,36 @@ if (siriusPosition.isVisible()) {
     println("Altitude: ${siriusPosition.altitudeDegrees()}°")
     println("Azimuth: ${siriusPosition.azimuthDegrees()}°")
 }
+```
 
-// Calculate multiple stars
-val stars = listOf(Star.Sirius, Star.Betelgeuse)
-val visibleStars = engine.calculateVisibleStars(stars, observer, now)
+### High-Level API (Use Cases)
+
+```kotlin
+// Setup repositories and use cases
+val resourceReader = ResourceReader()
+val starDataSource = LocalStarDataSource(resourceReader)
+val starRepository = LocalStarRepository(starDataSource)
+val astronomyEngine = AstronomyEngine()
+
+// Get visible stars use case
+val getVisibleStarsUseCase = GetVisibleStarsUseCase(starRepository, astronomyEngine)
+
+// Get all visible stars
+val result = getVisibleStarsUseCase.execute(
+    observer = Observer.Tokyo,
+    time = Clock.System.now(),
+    maxMagnitude = 4.0
+)
+
+result.onSuccess { visibleStars ->
+    visibleStars.forEach { star ->
+        println("${star.star.name}: Alt=${star.altitudeDegrees}°")
+    }
+}
+
+// Get constellation with stars
+val constellationUseCase = GetConstellationStarsUseCase(constellationRepository, astronomyEngine)
+val orion = constellationUseCase.execute("Ori", Observer.Tokyo, Clock.System.now())
 ```
 
 ## Project Status
@@ -84,6 +112,13 @@ val visibleStars = engine.calculateVisibleStars(stars, observer, now)
 - **Atmospheric Refraction**: Bennett's formula with atmospheric conditions
 - **AstronomyEngine API**: High-level facade with configurable corrections
 
+#### ✅ Infrastructure Layer (KMP Shared Module)
+- **Repository Pattern**: StarRepository, ConstellationRepository interfaces
+- **Data Sources**: Local JSON data sources with caching
+- **Sample Data**: 25 bright stars, 10 major constellations
+- **Use Cases**: GetVisibleStarsUseCase, GetConstellationStarsUseCase, SearchStarsUseCase
+- **Platform Support**: iOS (NSBundle), Android (placeholder)
+
 #### 🧪 Testing
 - Comprehensive unit tests for all astronomy modules
 - Integration tests for AstronomyEngine
@@ -91,11 +126,12 @@ val visibleStars = engine.calculateVisibleStars(stars, observer, now)
 
 ### In Progress
 - iOS UI implementation (SwiftUI)
-- Star catalog data integration
+- Integration tests for data layer
 
 ### Upcoming
 - Android UI implementation (Jetpack Compose)
-- Constellation data and rendering
+- API Client (Ktor) for remote data
+- Constellation rendering with lines
 - Layer switching system
 - Interactive star selection
 
