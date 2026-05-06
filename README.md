@@ -114,10 +114,20 @@ val orion = constellationUseCase.execute("Ori", Observer.Tokyo, Clock.System.now
 
 #### ✅ Infrastructure Layer (KMP Shared Module)
 - **Repository Pattern**: StarRepository, ConstellationRepository interfaces
-- **Data Sources**: Local JSON data sources with caching
+- **Local Data Sources**: JSON-based with ResourceReader (iOS/Android)
+- **Remote Data Sources**: API-based with Ktor HttpClient
+- **Cached Repositories**: Intelligent caching with multiple strategies
 - **Sample Data**: 25 bright stars, 10 major constellations
 - **Use Cases**: GetVisibleStarsUseCase, GetConstellationStarsUseCase, SearchStarsUseCase
-- **Platform Support**: iOS (NSBundle), Android (placeholder)
+
+#### ✅ API Client (KMP Shared Module)
+- **Ktor HttpClient**: Configured with JSON, logging, timeout, retry
+- **API Endpoints**: Stars, Constellations with RESTful structure
+- **Error Handling**: Typed ApiException (Network, Server, Client errors)
+- **Remote Repositories**: Full implementation for Star and Constellation
+- **Caching Strategy**: CACHE_FIRST, NETWORK_FIRST, CACHE_ONLY, NETWORK_ONLY
+- **InMemoryCache**: With expiration and automatic cleanup
+- **Platform Engines**: Darwin (iOS), Android
 
 #### 🧪 Testing
 - Comprehensive unit tests for all astronomy modules
@@ -130,10 +140,10 @@ val orion = constellationUseCase.execute("Ori", Observer.Tokyo, Clock.System.now
 
 ### Upcoming
 - Android UI implementation (Jetpack Compose)
-- API Client (Ktor) for remote data
 - Constellation rendering with lines
 - Layer switching system
 - Interactive star selection
+- API server implementation
 
 ## Documentation
 
