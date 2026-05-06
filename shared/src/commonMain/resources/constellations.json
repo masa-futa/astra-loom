@@ -1,0 +1,75 @@
+{
+  "version": "1.0",
+  "description": "Major constellation catalog for Astra Loom",
+  "constellations": [
+    {
+      "id": "Ori",
+      "name": "Orion",
+      "starIds": ["HIP27989", "HIP27366", "HIP25336", "HIP26311", "HIP25930"],
+      "lines": [
+        {"from": "HIP27366", "to": "HIP25336"},
+        {"from": "HIP25336", "to": "HIP26311"},
+        {"from": "HIP26311", "to": "HIP25930"},
+        {"from": "HIP25930", "to": "HIP27989"},
+        {"from": "HIP27989", "to": "HIP26311"}
+      ]
+    },
+    {
+      "id": "UMa",
+      "name": "Ursa Major",
+      "starIds": ["HIP54061", "HIP59774", "HIP67301"],
+      "lines": [
+        {"from": "HIP54061", "to": "HIP67301"},
+        {"from": "HIP67301", "to": "HIP59774"}
+      ]
+    },
+    {
+      "id": "UMi",
+      "name": "Ursa Minor",
+      "starIds": ["HIP11767"],
+      "lines": []
+    },
+    {
+      "id": "Cas",
+      "name": "Cassiopeia",
+      "starIds": ["HIP3179"],
+      "lines": []
+    },
+    {
+      "id": "Leo",
+      "name": "Leo",
+      "starIds": ["HIP49669"],
+      "lines": []
+    },
+    {
+      "id": "Sco",
+      "name": "Scorpius",
+      "starIds": ["HIP85927"],
+      "lines": []
+    },
+    {
+      "id": "Gem",
+      "name": "Gemini",
+      "starIds": ["HIP28360"],
+      "lines": []
+    },
+    {
+      "id": "Tau",
+      "name": "Taurus",
+      "starIds": ["HIP21421"],
+      "lines": []
+    },
+    {
+      "id": "Aql",
+      "name": "Aquila",
+      "starIds": ["HIP97649"],
+      "lines": []
+    },
+    {
+      "id": "Cyg",
+      "name": "Cygnus",
+      "starIds": ["HIP102098"],
+      "lines": []
+    }
+  ]
+}

@@ -1,0 +1,206 @@
+{
+  "version": "1.0",
+  "description": "Bright star catalog for Astra Loom (magnitude < 4.0)",
+  "stars": [
+    {
+      "id": "HIP32349",
+      "name": "Sirius",
+      "raDegrees": 101.287,
+      "decDegrees": -16.716,
+      "magnitude": -1.46,
+      "spectralType": "A1V"
+    },
+    {
+      "id": "HIP30438",
+      "name": "Canopus",
+      "raDegrees": 95.988,
+      "decDegrees": -52.696,
+      "magnitude": -0.74,
+      "spectralType": "A9II"
+    },
+    {
+      "id": "HIP69673",
+      "name": "Arcturus",
+      "raDegrees": 213.915,
+      "decDegrees": 19.182,
+      "magnitude": -0.05,
+      "spectralType": "K1.5III"
+    },
+    {
+      "id": "HIP71683",
+      "name": "Alpha Centauri A",
+      "raDegrees": 219.902,
+      "decDegrees": -60.834,
+      "magnitude": -0.01,
+      "spectralType": "G2V"
+    },
+    {
+      "id": "HIP91262",
+      "name": "Vega",
+      "raDegrees": 279.234,
+      "decDegrees": 38.783,
+      "magnitude": 0.03,
+      "spectralType": "A0V"
+    },
+    {
+      "id": "HIP24608",
+      "name": "Capella",
+      "raDegrees": 79.172,
+      "decDegrees": 45.998,
+      "magnitude": 0.08,
+      "spectralType": "G5III"
+    },
+    {
+      "id": "HIP27989",
+      "name": "Rigel",
+      "raDegrees": 78.634,
+      "decDegrees": -8.202,
+      "magnitude": 0.13,
+      "spectralType": "B8Ia"
+    },
+    {
+      "id": "HIP37279",
+      "name": "Procyon",
+      "raDegrees": 114.825,
+      "decDegrees": 5.225,
+      "magnitude": 0.34,
+      "spectralType": "F5IV"
+    },
+    {
+      "id": "HIP27366",
+      "name": "Betelgeuse",
+      "raDegrees": 88.793,
+      "decDegrees": 7.407,
+      "magnitude": 0.42,
+      "spectralType": "M2Iab"
+    },
+    {
+      "id": "HIP97649",
+      "name": "Altair",
+      "raDegrees": 297.696,
+      "decDegrees": 8.868,
+      "magnitude": 0.76,
+      "spectralType": "A7V"
+    },
+    {
+      "id": "HIP21421",
+      "name": "Aldebaran",
+      "raDegrees": 68.980,
+      "decDegrees": 16.509,
+      "magnitude": 0.85,
+      "spectralType": "K5III"
+    },
+    {
+      "id": "HIP85927",
+      "name": "Antares",
+      "raDegrees": 247.352,
+      "decDegrees": -26.432,
+      "magnitude": 0.96,
+      "spectralType": "M1.5Iab"
+    },
+    {
+      "id": "HIP113368",
+      "name": "Fomalhaut",
+      "raDegrees": 344.413,
+      "decDegrees": -29.622,
+      "magnitude": 1.16,
+      "spectralType": "A3V"
+    },
+    {
+      "id": "HIP102098",
+      "name": "Deneb",
+      "raDegrees": 310.358,
+      "decDegrees": 45.280,
+      "magnitude": 1.25,
+      "spectralType": "A2Ia"
+    },
+    {
+      "id": "HIP49669",
+      "name": "Regulus",
+      "raDegrees": 152.093,
+      "decDegrees": 11.967,
+      "magnitude": 1.35,
+      "spectralType": "B7V"
+    },
+    {
+      "id": "HIP60718",
+      "name": "Adhara",
+      "raDegrees": 104.656,
+      "decDegrees": -28.972,
+      "magnitude": 1.50,
+      "spectralType": "B2II"
+    },
+    {
+      "id": "HIP25336",
+      "name": "Bellatrix",
+      "raDegrees": 81.283,
+      "decDegrees": 6.350,
+      "magnitude": 1.64,
+      "spectralType": "B2III"
+    },
+    {
+      "id": "HIP26311",
+      "name": "Alnilam",
+      "raDegrees": 84.053,
+      "decDegrees": -1.202,
+      "magnitude": 1.69,
+      "spectralType": "B0Ia"
+    },
+    {
+      "id": "HIP25930",
+      "name": "Alnitak",
+      "raDegrees": 85.190,
+      "decDegrees": -1.943,
+      "magnitude": 1.77,
+      "spectralType": "O9Ib"
+    },
+    {
+      "id": "HIP28360",
+      "name": "Alhena",
+      "raDegrees": 99.428,
+      "decDegrees": 16.399,
+      "magnitude": 1.93,
+      "spectralType": "A0IV"
+    },
+    {
+      "id": "HIP11767",
+      "name": "Polaris",
+      "raDegrees": 37.946,
+      "decDegrees": 89.264,
+      "magnitude": 1.98,
+      "spectralType": "F7Ib"
+    },
+    {
+      "id": "HIP67301",
+      "name": "Alioth",
+      "raDegrees": 206.885,
+      "decDegrees": 55.960,
+      "magnitude": 1.77,
+      "spectralType": "A0p"
+    },
+    {
+      "id": "HIP54061",
+      "name": "Dubhe",
+      "raDegrees": 165.932,
+      "decDegrees": 61.751,
+      "magnitude": 1.79,
+      "spectralType": "K0III"
+    },
+    {
+      "id": "HIP59774",
+      "name": "Alkaid",
+      "raDegrees": 206.885,
+      "decDegrees": 49.313,
+      "magnitude": 1.86,
+      "spectralType": "B3V"
+    },
+    {
+      "id": "HIP3179",
+      "name": "Schedar",
+      "raDegrees": 10.127,
+      "decDegrees": 56.537,
+      "magnitude": 2.23,
+      "spectralType": "K0IIIa"
+    }
+  ]
+}
