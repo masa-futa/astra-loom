@@ -33,9 +33,71 @@ astra-loom/
 - **Astronomy Engine**: Custom implementation with validation against Stellarium
 - **Data Source**: Bright Star Catalog, constellation data
 
+## Usage Example
+
+```kotlin
+// Create astronomy engine
+val engine = AstronomyEngine(
+    config = AstronomyEngine.EngineConfig(
+        applyPrecession = true,
+        applyRefraction = true
+    )
+)
+
+// Define observer location (Tokyo)
+val observer = Observer.Tokyo
+
+// Get current time
+val now = Clock.System.now()
+
+// Calculate star position
+val siriusPosition = engine.calculateStarPosition(
+    star = Star.Sirius,
+    observer = observer,
+    time = now
+)
+
+// Check visibility
+if (siriusPosition.isVisible()) {
+    println("Sirius is visible!")
+    println("Altitude: ${siriusPosition.altitudeDegrees()}°")
+    println("Azimuth: ${siriusPosition.azimuthDegrees()}°")
+}
+
+// Calculate multiple stars
+val stars = listOf(Star.Sirius, Star.Betelgeuse)
+val visibleStars = engine.calculateVisibleStars(stars, observer, now)
+```
+
 ## Project Status
 
 🚧 Under active development
+
+### Completed Features
+
+#### ✅ Astronomy Engine (KMP Shared Module)
+- **Domain Models**: Star, Constellation, Observer, Coordinate systems
+- **Julian Date**: Calendar to JD conversion, J2000 calculations
+- **Sidereal Time**: GMST, LST, and hour angle calculations
+- **Coordinate Transform**: Equatorial (RA/Dec) ↔ Horizontal (Alt/Az)
+- **Precession**: IAU 1976 precession correction
+- **Atmospheric Refraction**: Bennett's formula with atmospheric conditions
+- **AstronomyEngine API**: High-level facade with configurable corrections
+
+#### 🧪 Testing
+- Comprehensive unit tests for all astronomy modules
+- Integration tests for AstronomyEngine
+- Validation against known astronomical values
+
+### In Progress
+- iOS UI implementation (SwiftUI)
+- Star catalog data integration
+
+### Upcoming
+- Android UI implementation (Jetpack Compose)
+- Constellation data and rendering
+- Layer switching system
+- Interactive star selection
 
 ## Documentation
 
