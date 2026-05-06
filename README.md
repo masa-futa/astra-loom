@@ -39,8 +39,16 @@ astra-loom/
 
 ## Documentation
 
-- [Architecture](docs/architecture.md)
-- [Setup Guide](docs/setup.md)
+### Technical Documentation
+- [Architecture](docs/architecture.md) - System architecture and module structure
+- [Setup Guide](docs/setup.md) - Development environment setup
+
+### Design Documentation
+- [Requirements (RFP)](docs/requirements.md) - Project requirements and concept
+- [System Design](docs/design.md) - Detailed system design (KMP + SwiftUI)
+- [Astronomy Engine Design](docs/astronomy-engine-design.md) - Mathematical formulas and calculations
+- [Astronomy Engine Implementation](docs/astronomy-engine-implementation.md) - Implementation and validation strategy
+- [UI Specification](docs/ui-specification.md) - Screen definitions and UX design
 
 ## License
 
