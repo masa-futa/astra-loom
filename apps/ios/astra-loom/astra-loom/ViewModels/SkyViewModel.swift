@@ -20,6 +20,10 @@ final class SkyViewModel: ObservableObject {
     // ビューポート設定
     @Published var viewportState = ViewportState()
 
+    // 星データのキャッシュ（ビューポート変更時の再計算用）
+    private var visibleStarsData: [VisibleStar] = []
+    private var currentScreenSize: CGSize = .zero
+
     private let service: AstraLoomService
 
     init(service: AstraLoomService) {
@@ -48,6 +52,19 @@ final class SkyViewModel: ObservableObject {
     func resetToCurrentTime() {
         currentTime = Date()
         useCurrentTime = true
+    }
+
+    /// ビューポート変更時に星の座標のみを再計算（高速）
+    func updateStarPositions() {
+        guard !visibleStarsData.isEmpty, currentScreenSize != .zero else { return }
+
+        self.stars = visibleStarsData.map { star in
+            StarViewModel(
+                visibleStar: star,
+                screenSize: currentScreenSize,
+                viewportState: self.viewportState
+            )
+        }
     }
 
     /// Load visible stars for current location and time
@@ -87,6 +104,10 @@ final class SkyViewModel: ObservableObject {
             )
 
             print("⭐️ Received \(visibleStars.count) visible stars")
+
+            // キャッシュに保存
+            self.visibleStarsData = visibleStars
+            self.currentScreenSize = screenSize
 
             // Convert to view models
             self.stars = visibleStars.map { star in

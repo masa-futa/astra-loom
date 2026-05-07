@@ -14,6 +14,10 @@ struct ContentView: View {
     @State private var showFOVControl = false
     @State private var selectedStar: StarViewModel?
     @State private var isDragging = false
+    @State private var lastDragValue: CGSize = .zero
+    @State private var isTimeDragging = false
+    @State private var lastTimeDragValue: CGFloat = 0
+    @State private var lastStarUpdateTime: Date = Date()
 
     init() {
         _viewModel = StateObject(wrappedValue: SkyViewModel(service: AstraLoomService()))
@@ -41,14 +45,26 @@ struct ContentView: View {
                             isDragging = true
                             let degreesPerPixel = viewModel.viewportState.fieldOfView / screenSize.width
 
-                            let azimuthDelta = -Double(value.translation.width) * degreesPerPixel
-                            let altitudeDelta = Double(value.translation.height) * degreesPerPixel
+                            // 前回からの差分を計算
+                            let deltaWidth = value.translation.width - lastDragValue.width
+                            let deltaHeight = value.translation.height - lastDragValue.height
+
+                            let azimuthDelta = -Double(deltaWidth) * degreesPerPixel
+                            let altitudeDelta = Double(deltaHeight) * degreesPerPixel
 
                             viewModel.viewportState.updateAzimuth(azimuthDelta)
                             viewModel.viewportState.updateAltitude(altitudeDelta)
+
+                            // ドラッグ中にリアルタイムで星の位置を更新
+                            viewModel.updateStarPositions()
+
+                            lastDragValue = value.translation
                         }
                         .onEnded { _ in
                             isDragging = false
+                            lastDragValue = .zero
+
+                            // ドラッグ終了時に念のため再読み込み（視野外の星を更新）
                             Task {
                                 await loadStars()
                             }
@@ -228,6 +244,17 @@ struct ContentView: View {
             )
         }
         .overlay {
+            // 2本指ドラッグで時間変更
+            TwoFingerDragGestureView(
+                onChanged: { deltaX in
+                    handleTimeDrag(deltaX: deltaX)
+                },
+                onEnded: {
+                    handleTimeDragEnded()
+                }
+            )
+        }
+        .overlay {
             if selectedStar != nil {
                 // 背景タップで閉じる
                 Color.black.opacity(0.3)
@@ -267,6 +294,38 @@ struct ContentView: View {
 
     private func loadStars() async {
         await viewModel.loadStars(screenSize: screenSize)
+    }
+
+    /// 2本指ドラッグで時間を変更
+    private func handleTimeDrag(deltaX: CGFloat) {
+        isTimeDragging = true
+
+        // 時間変更速度: 画面幅 = 12時間
+        let hoursPerScreenWidth = 12.0
+        let hoursChange = -Double(deltaX) / screenSize.width * hoursPerScreenWidth
+
+        // 時刻を変更
+        let newTime = viewModel.currentTime.addingTimeInterval(hoursChange * 3600)
+        viewModel.changeTime(newTime)
+
+        // スロットリング: 0.2秒ごとに星を更新
+        let now = Date()
+        if now.timeIntervalSince(lastStarUpdateTime) > 0.2 {
+            Task {
+                await loadStars()
+            }
+            lastStarUpdateTime = now
+        }
+    }
+
+    /// 2本指ドラッグ終了
+    private func handleTimeDragEnded() {
+        isTimeDragging = false
+
+        // 最終的な星の更新
+        Task {
+            await loadStars()
+        }
     }
 
     private var formattedDate: String {
