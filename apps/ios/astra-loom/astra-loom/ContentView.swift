@@ -11,7 +11,9 @@ struct ContentView: View {
     @State private var screenSize: CGSize = .zero
     @State private var showLocationPicker = false
     @State private var showTimeControl = false
+    @State private var showFOVControl = false
     @State private var selectedStar: StarViewModel?
+    @State private var isDragging = false
 
     init() {
         _viewModel = StateObject(wrappedValue: SkyViewModel(service: AstraLoomService()))
@@ -33,9 +35,28 @@ struct ContentView: View {
                     }
                 )
                 .contentShape(Rectangle())
+                .simultaneousGesture(
+                    DragGesture(minimumDistance: 10)
+                        .onChanged { value in
+                            isDragging = true
+                            let degreesPerPixel = viewModel.viewportState.fieldOfView / screenSize.width
+
+                            let azimuthDelta = -Double(value.translation.width) * degreesPerPixel
+                            let altitudeDelta = Double(value.translation.height) * degreesPerPixel
+
+                            viewModel.viewportState.updateAzimuth(azimuthDelta)
+                            viewModel.viewportState.updateAltitude(altitudeDelta)
+                        }
+                        .onEnded { _ in
+                            isDragging = false
+                            Task {
+                                await loadStars()
+                            }
+                        }
+                )
                 .onTapGesture { location in
-                    // Find tapped star
-                    if let tappedStar = findTappedStar(at: location) {
+                    // Find tapped star (only if not dragging)
+                    if !isDragging, let tappedStar = findTappedStar(at: location) {
                         withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
                             selectedStar = tappedStar
                         }
@@ -76,9 +97,21 @@ struct ContentView: View {
                             .cornerRadius(12)
                         }
 
+                        // 視野角ボタン
+                        Button {
+                            showFOVControl.toggle()
+                            showTimeControl = false
+                        } label: {
+                            Image(systemName: "viewfinder")
+                                .padding(8)
+                                .background(.ultraThinMaterial)
+                                .cornerRadius(12)
+                        }
+
                         // 時刻コントロールボタン
                         Button {
                             showTimeControl.toggle()
+                            showFOVControl = false
                         } label: {
                             Image(systemName: "clock.fill")
                                 .padding(8)
@@ -90,6 +123,21 @@ struct ContentView: View {
                 }
                 .padding()
                 .background(.ultraThinMaterial.opacity(0.3))
+
+                // 視野角コントロール（展開時）
+                if showFOVControl {
+                    FOVControlView(
+                        viewportState: viewModel.viewportState,
+                        onFOVChange: {
+                            Task {
+                                await loadStars()
+                            }
+                        }
+                    )
+                    .padding(.horizontal)
+                    .padding(.bottom)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                }
 
                 // 時刻コントロール（展開時）
                 if showTimeControl {
@@ -107,6 +155,10 @@ struct ContentView: View {
                     .padding(.bottom)
                     .transition(.move(edge: .top).combined(with: .opacity))
                 }
+
+                // コンパス表示
+                CompassView(viewportState: viewModel.viewportState)
+                    .padding(.top, 8)
 
                 Spacer()
 

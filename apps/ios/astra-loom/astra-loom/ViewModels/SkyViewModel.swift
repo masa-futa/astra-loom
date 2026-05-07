@@ -17,6 +17,9 @@ final class SkyViewModel: ObservableObject {
     @Published var currentTime: Date = Date()
     @Published var useCurrentTime: Bool = true
 
+    // ビューポート設定
+    @Published var viewportState = ViewportState()
+
     private let service: AstraLoomService
 
     init(service: AstraLoomService) {
@@ -87,7 +90,11 @@ final class SkyViewModel: ObservableObject {
 
             // Convert to view models
             self.stars = visibleStars.map { star in
-                StarViewModel(visibleStar: star, screenSize: screenSize)
+                StarViewModel(
+                    visibleStar: star,
+                    screenSize: screenSize,
+                    viewportState: self.viewportState
+                )
             }
 
             print("✅ Converted to \(self.stars.count) star view models")

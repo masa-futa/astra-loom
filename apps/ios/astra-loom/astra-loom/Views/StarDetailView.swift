@@ -306,7 +306,8 @@ struct StarDetailView: View {
                 azimuthDegrees: 180.0,
                 hourAngle: 0.0
             ),
-            screenSize: CGSize(width: 400, height: 800)
+            screenSize: CGSize(width: 400, height: 800),
+            viewportState: ViewportState()
         ),
         onDismiss: {}
     )

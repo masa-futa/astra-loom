@@ -16,7 +16,7 @@ struct StarViewModel: Identifiable {
     let spectralType: String?
     let visibleStar: VisibleStar
 
-    init(visibleStar: VisibleStar, screenSize: CGSize, viewportSize: CGFloat = 120.0) {
+    init(visibleStar: VisibleStar, screenSize: CGSize, viewportState: ViewportState) {
         self.visibleStar = visibleStar
         self.id = visibleStar.star.id
         self.name = visibleStar.star.name ?? "Unknown"
@@ -25,19 +25,18 @@ struct StarViewModel: Identifiable {
         self.azimuth = visibleStar.azimuthDegrees
         self.spectralType = visibleStar.star.spectralType
 
-        // Convert azimuth/altitude to screen coordinates
-        // Azimuth: 0° = North, 90° = East, 180° = South, 270° = West
-        // Map to screen: center is zenith (altitude 90°)
+        // Calculate screen position using stereographic projection
+        let position = Self.calculateScreenPosition(
+            starAltitude: visibleStar.altitudeDegrees,
+            starAzimuth: visibleStar.azimuthDegrees,
+            centerAltitude: viewportState.centerAltitude,
+            centerAzimuth: viewportState.centerAzimuth,
+            fieldOfView: viewportState.fieldOfView,
+            screenSize: screenSize
+        )
 
-        let azimuthRad = visibleStar.azimuthDegrees * .pi / 180.0
-        let altitude = visibleStar.altitudeDegrees
-
-        // Distance from center based on altitude (90° = center, 0° = edge)
-        let radius = (90.0 - altitude) / viewportSize * min(screenSize.width, screenSize.height) / 2.0
-
-        // Calculate screen position
-        self.x = screenSize.width / 2 + CGFloat(radius * sin(azimuthRad))
-        self.y = screenSize.height / 2 - CGFloat(radius * cos(azimuthRad))
+        self.x = position.x
+        self.y = position.y
 
         // Calculate size based on magnitude
         // Brighter stars (lower magnitude) are larger
@@ -49,6 +48,44 @@ struct StarViewModel: Identifiable {
 
         // Color based on spectral type
         self.color = Self.colorForSpectralType(visibleStar.star.spectralType ?? "")
+    }
+
+    /// Calculate screen position using stereographic projection with spherical law of cosines
+    static func calculateScreenPosition(
+        starAltitude: Double,
+        starAzimuth: Double,
+        centerAltitude: Double,
+        centerAzimuth: Double,
+        fieldOfView: Double,
+        screenSize: CGSize
+    ) -> CGPoint {
+        // Convert to radians
+        let starAltRad = starAltitude * .pi / 180.0
+        let starAzRad = starAzimuth * .pi / 180.0
+        let centerAltRad = centerAltitude * .pi / 180.0
+        let centerAzRad = centerAzimuth * .pi / 180.0
+
+        // Calculate angular distance using spherical law of cosines
+        let cosAngularDistance = sin(starAltRad) * sin(centerAltRad) +
+                                 cos(starAltRad) * cos(centerAltRad) * cos(starAzRad - centerAzRad)
+        let angularDistance = acos(max(-1.0, min(1.0, cosAngularDistance)))
+
+        // Calculate bearing from center to star
+        let y = sin(starAzRad - centerAzRad) * cos(starAltRad)
+        let x = cos(centerAltRad) * sin(starAltRad) -
+                sin(centerAltRad) * cos(starAltRad) * cos(starAzRad - centerAzRad)
+        let bearing = atan2(y, x)
+
+        // Project to screen using FOV scaling
+        let screenRadius = min(screenSize.width, screenSize.height) / 2.0
+        let fovRad = fieldOfView * .pi / 180.0
+        let radius = angularDistance / fovRad * screenRadius
+
+        // Calculate screen position
+        let screenX = screenSize.width / 2.0 + radius * sin(bearing)
+        let screenY = screenSize.height / 2.0 - radius * cos(bearing)
+
+        return CGPoint(x: screenX, y: screenY)
     }
 
     /// Convert spectral type to color
