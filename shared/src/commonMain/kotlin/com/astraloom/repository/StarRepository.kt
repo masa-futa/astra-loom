@@ -32,12 +32,12 @@ interface StarRepository {
      * Get stars by magnitude range (for filtering by brightness)
      *
      * @param maxMagnitude Maximum magnitude (lower = brighter)
-     * @param minMagnitude Minimum magnitude (optional)
+     * @param minMagnitude Minimum magnitude (optional, default -30.0 to include all stars)
      * @return List of stars within magnitude range
      */
     suspend fun getStarsByMagnitude(
         maxMagnitude: Double,
-        minMagnitude: Double = Double.MAX_VALUE
+        minMagnitude: Double = -30.0
     ): Result<List<Star>>
 
     /**

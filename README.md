@@ -134,15 +134,27 @@ val orion = constellationUseCase.execute("Ori", Observer.Tokyo, Clock.System.now
 - Integration tests for AstronomyEngine
 - Validation against known astronomical values
 
+#### ✅ iOS Implementation (Phase 1-2 Complete)
+- **Star Rendering**: 100 bright stars with spectral type colors
+- **Background Gradients**: Sun position-based (day, twilight, night)
+- **Location Selection**: 13 worldwide cities with timezone support
+- **Time Control**: Interactive time slider and quick buttons
+- **Star Details**: Tap to view detailed information panel
+  - Physical properties (temperature, color, star type)
+  - Current position (altitude, azimuth, direction)
+  - Celestial coordinates (RA/Dec)
+- **UX**: Right slide-in panel, tap-to-dismiss overlay
+
 ### In Progress
-- iOS UI implementation (SwiftUI)
+- Phase 3 features planning (swipe navigation, constellation lines, search)
 - Integration tests for data layer
 
 ### Upcoming
 - Android UI implementation (Jetpack Compose)
+- Swipe gesture for viewing direction change
 - Constellation rendering with lines
-- Layer switching system
-- Interactive star selection
+- Star/constellation search functionality
+- Star descriptions and mythology (Phase 3/4)
 - API server implementation
 
 ## Documentation

@@ -1,5 +1,7 @@
 package com.astraloom.astronomy
 
+import com.astraloom.util.toRadians
+import com.astraloom.util.toDegrees
 import kotlin.math.*
 
 /**
@@ -35,7 +37,7 @@ object Refraction {
             return apparentAltitudeRad
         }
 
-        val apparentAltDeg = Math.toDegrees(apparentAltitudeRad)
+        val apparentAltDeg = apparentAltitudeRad.toDegrees()
 
         // For very high altitudes (> 85°), refraction is negligible
         if (apparentAltDeg > 85.0) {
@@ -44,14 +46,14 @@ object Refraction {
 
         // Calculate refraction in arcminutes using Bennett's formula
         val refractionArcmin = if (apparentAltDeg > 0.0) {
-            1.02 / tan(Math.toRadians(apparentAltDeg + 10.3 / (apparentAltDeg + 5.11)))
+            1.02 / tan((apparentAltDeg + 10.3 / (apparentAltDeg + 5.11)).toRadians())
         } else {
             // Near horizon, use approximation
             34.0 // Approximately 34 arcminutes at horizon
         }
 
         // Convert arcminutes to radians
-        val refractionRad = Math.toRadians(refractionArcmin / 60.0)
+        val refractionRad = (refractionArcmin / 60.0).toRadians()
 
         // True altitude = Apparent altitude - Refraction
         return apparentAltitudeRad - refractionRad
@@ -71,7 +73,7 @@ object Refraction {
             return trueAltitudeRad
         }
 
-        val trueAltDeg = Math.toDegrees(trueAltitudeRad)
+        val trueAltDeg = (trueAltitudeRad).toDegrees()
 
         // For very high altitudes, refraction is negligible
         if (trueAltDeg > 85.0) {
@@ -80,12 +82,12 @@ object Refraction {
 
         // Calculate refraction (approximate)
         val refractionArcmin = if (trueAltDeg > 0.0) {
-            1.02 / tan(Math.toRadians(trueAltDeg + 10.3 / (trueAltDeg + 5.11)))
+            1.02 / tan((trueAltDeg + 10.3 / (trueAltDeg + 5.11).toRadians()))
         } else {
             34.0
         }
 
-        val refractionRad = Math.toRadians(refractionArcmin / 60.0)
+        val refractionRad = (refractionArcmin / 60.0).toRadians()
 
         // Apparent altitude = True altitude + Refraction
         return trueAltitudeRad + refractionRad
@@ -118,7 +120,7 @@ object Refraction {
             return apparentAltitudeRad
         }
 
-        val apparentAltDeg = Math.toDegrees(apparentAltitudeRad)
+        val apparentAltDeg = (apparentAltitudeRad).toDegrees()
 
         if (apparentAltDeg > 85.0) {
             return apparentAltitudeRad
@@ -126,7 +128,7 @@ object Refraction {
 
         // Standard refraction
         val refractionStandard = if (apparentAltDeg > 0.0) {
-            1.02 / tan(Math.toRadians(apparentAltDeg + 10.3 / (apparentAltDeg + 5.11)))
+            1.02 / tan((apparentAltDeg + 10.3 / (apparentAltDeg + 5.11).toRadians()))
         } else {
             34.0
         }
@@ -136,7 +138,7 @@ object Refraction {
         val temperatureFactor = 283.0 / (273.0 + temperatureCelsius)
 
         val refractionArcmin = refractionStandard * pressureFactor * temperatureFactor
-        val refractionRad = Math.toRadians(refractionArcmin / 60.0)
+        val refractionRad = (refractionArcmin / 60.0).toRadians()
 
         return apparentAltitudeRad - refractionRad
     }
@@ -148,12 +150,12 @@ object Refraction {
      * @return Refraction correction in arcseconds
      */
     fun calculateRefractionAmount(altitudeRad: Double): Double {
-        if (altitudeRad < 0.0 || altitudeRad > Math.toRadians(85.0)) {
+        if (altitudeRad < 0.0 || altitudeRad > (85.0).toRadians()) {
             return 0.0
         }
 
-        val altDeg = Math.toDegrees(altitudeRad)
-        val refractionArcmin = 1.02 / tan(Math.toRadians(altDeg + 10.3 / (altDeg + 5.11)))
+        val altDeg = (altitudeRad).toDegrees()
+        val refractionArcmin = 1.02 / tan((altDeg + 10.3 / (altDeg + 5.11).toRadians()))
 
         return refractionArcmin * 60.0 // Convert to arcseconds
     }
@@ -169,13 +171,13 @@ object Refraction {
      */
     fun isRefractionSignificant(altitudeRad: Double): Boolean {
         // Below 45°, refraction > 1 arcminute
-        return altitudeRad < Math.toRadians(45.0) && altitudeRad > 0.0
+        return altitudeRad < (45.0).toRadians() && altitudeRad > 0.0
     }
 
     /**
      * Get refraction at horizon (approximately 34 arcminutes)
      */
     fun getHorizonRefraction(): Double {
-        return Math.toRadians(34.0 / 60.0) // ~34 arcminutes in radians
+        return (34.0 / 60.0).toRadians() // ~34 arcminutes in radians
     }
 }

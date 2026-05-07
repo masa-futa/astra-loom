@@ -1,5 +1,9 @@
 package com.astraloom.domain
 
+import com.astraloom.util.toRadians
+import com.astraloom.util.toDegrees
+import kotlin.math.*
+
 /**
  * Equatorial coordinate system (赤道座標系)
  * J2000.0 epoch
@@ -17,8 +21,8 @@ data class EquatorialCoordinate(
     }
 
     companion object {
-        private const val TWO_PI = 2 * Math.PI
-        private const val HALF_PI = Math.PI / 2
+        private const val TWO_PI = 2 * PI
+        private const val HALF_PI = PI / 2
 
         /**
          * Create from hours, minutes, seconds (RA) and degrees, arcminutes, arcseconds (Dec)
@@ -33,12 +37,12 @@ data class EquatorialCoordinate(
         ): EquatorialCoordinate {
             // RA: hours to radians
             val raInHours = raHours + raMinutes / 60.0 + raSeconds / 3600.0
-            val raRadians = raInHours * (Math.PI / 12.0) // 24 hours = 2π radians
+            val raRadians = raInHours * (PI / 12.0) // 24 hours = 2π radians
 
             // Dec: degrees to radians
             val decSign = if (decDegrees < 0) -1.0 else 1.0
-            val decInDegrees = Math.abs(decDegrees) + decArcMinutes / 60.0 + decArcSeconds / 3600.0
-            val decRadians = decSign * Math.toRadians(decInDegrees)
+            val decInDegrees = abs(decDegrees) + decArcMinutes / 60.0 + decArcSeconds / 3600.0
+            val decRadians = decSign * decInDegrees.toRadians()
 
             return EquatorialCoordinate(raRadians, decRadians)
         }
@@ -48,8 +52,8 @@ data class EquatorialCoordinate(
          */
         fun fromDegrees(raDegrees: Double, decDegrees: Double): EquatorialCoordinate {
             return EquatorialCoordinate(
-                Math.toRadians(raDegrees),
-                Math.toRadians(decDegrees)
+                raDegrees.toRadians(),
+                decDegrees.toRadians()
             )
         }
     }
@@ -57,10 +61,10 @@ data class EquatorialCoordinate(
     /**
      * Convert RA to hours
      */
-    fun raToHours(): Double = ra * (12.0 / Math.PI)
+    fun raToHours(): Double = ra * (12.0 / PI)
 
     /**
      * Convert Dec to degrees
      */
-    fun decToDegrees(): Double = Math.toDegrees(dec)
+    fun decToDegrees(): Double = dec.toDegrees()
 }

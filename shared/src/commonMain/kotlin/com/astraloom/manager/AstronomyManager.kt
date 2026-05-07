@@ -1,4 +1,5 @@
 package com.astraloom.manager
+import com.astraloom.util.toDegrees
 
 import com.astraloom.astronomy.AstronomyEngine
 import com.astraloom.domain.Observer
@@ -88,7 +89,7 @@ class AstronomyManager(
         return try {
             val jd = com.astraloom.astronomy.JulianDate.fromInstant(time)
             val separationRadians = astronomyEngine.calculateAngularSeparation(star1, star2, jd)
-            Result.success(Math.toDegrees(separationRadians))
+            Result.success((separationRadians).toDegrees())
         } catch (e: Exception) {
             Result.failure(Exception("Failed to calculate angular separation: ${e.message}", e))
         }

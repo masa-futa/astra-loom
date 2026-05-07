@@ -1,5 +1,7 @@
 package com.astraloom.data.cache
 
+import kotlinx.datetime.Clock
+
 /**
  * Cache strategy enumeration
  * (キャッシュ戦略)
@@ -47,7 +49,7 @@ data class CacheEntry<T>(
         ): CacheEntry<T> {
             return CacheEntry(
                 data = data,
-                timestamp = System.currentTimeMillis(),
+                timestamp = Clock.System.now().toEpochMilliseconds(),
                 expirationMs = expirationMs
             )
         }
@@ -57,7 +59,7 @@ data class CacheEntry<T>(
      * Check if cache entry is expired
      */
     fun isExpired(): Boolean {
-        val currentTime = System.currentTimeMillis()
+        val currentTime = Clock.System.now().toEpochMilliseconds()
         return (currentTime - timestamp) > expirationMs
     }
 
@@ -65,7 +67,7 @@ data class CacheEntry<T>(
      * Get remaining time until expiration
      */
     fun remainingTimeMs(): Long {
-        val currentTime = System.currentTimeMillis()
+        val currentTime = Clock.System.now().toEpochMilliseconds()
         val elapsed = currentTime - timestamp
         return (expirationMs - elapsed).coerceAtLeast(0)
     }

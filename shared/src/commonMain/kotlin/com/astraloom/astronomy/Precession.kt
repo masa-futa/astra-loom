@@ -1,6 +1,8 @@
 package com.astraloom.astronomy
 
 import com.astraloom.domain.EquatorialCoordinate
+import com.astraloom.util.toRadians
+import com.astraloom.util.toDegrees
 import kotlin.math.*
 
 /**
@@ -48,9 +50,9 @@ object Precession {
         val thetaDeg = (2004.3109 * T - 0.42665 * T * T - 0.041833 * T * T * T) / 3600.0
 
         // Convert to radians
-        val zeta = Math.toRadians(zetaDeg)
-        val z = Math.toRadians(zDeg)
-        val theta = Math.toRadians(thetaDeg)
+        val zeta = zetaDeg.toRadians()
+        val z = zDeg.toRadians()
+        val theta = thetaDeg.toRadians()
 
         // Original coordinates
         val ra0 = j2000Coordinate.ra
@@ -101,11 +103,11 @@ object Precession {
         val dec0 = j2000Coordinate.dec
 
         // Annual precession in RA (approximate)
-        val deltaRAPerYear = Math.toRadians(50.3 / 3600.0) / cos(dec0)
+        val deltaRAPerYear = (50.3 / 3600.0) / cos(dec0)
         val deltaRA = deltaRAPerYear * T * 100.0 // T is in centuries
 
         // Annual precession in Dec (approximate, simplified)
-        val deltaDecPerYear = Math.toRadians(20.0 / 3600.0) * sin(ra0)
+        val deltaDecPerYear = (20.0 / 3600.0) * sin(ra0)
         val deltaDec = deltaDecPerYear * T * 100.0
 
         var ra = ra0 + deltaRA
@@ -135,8 +137,8 @@ object Precession {
         val deltaDec = precessed.dec - j2000Coordinate.dec
 
         // Convert to arcseconds
-        val deltaRAArcsec = Math.toDegrees(deltaRA) * 3600.0
-        val deltaDecArcsec = Math.toDegrees(deltaDec) * 3600.0
+        val deltaRAArcsec = deltaRA.toDegrees() * 3600.0
+        val deltaDecArcsec = deltaDec.toDegrees() * 3600.0
 
         return Pair(deltaRAArcsec, deltaDecArcsec)
     }

@@ -1,48 +1,3 @@
-package com.astraloom.data.source
-
-import kotlinx.cinterop.ExperimentalForeignApi
-import platform.Foundation.NSBundle
-import platform.Foundation.NSString
-import platform.Foundation.NSUTF8StringEncoding
-import platform.Foundation.stringWithContentsOfFile
-
-/**
- * iOS implementation of ResourceReader
- */
-@OptIn(ExperimentalForeignApi::class)
-actual class ResourceReader {
-    actual fun readResource(path: String): String {
-        val parts = path.split(".")
-        val name = parts.dropLast(1).joinToString(".")
-        val ext = parts.lastOrNull() ?: ""
-
-        // Try to load from main bundle
-        val resourcePath = NSBundle.mainBundle.pathForResource(name, ext)
-        if (resourcePath != null) {
-            val content = NSString.stringWithContentsOfFile(
-                resourcePath,
-                encoding = NSUTF8StringEncoding,
-                error = null
-            )
-            if (content != null) {
-                return content
-            }
-        }
-
-        // Fallback: return embedded data
-        return getEmbeddedResource(name)
-    }
-
-    private fun getEmbeddedResource(name: String): String {
-        return when (name) {
-            "stars" -> getEmbeddedStarsJson()
-            "constellations" -> getEmbeddedConstellationsJson()
-            else -> throw IllegalArgumentException("Resource not found: $name")
-        }
-    }
-
-    // 埋め込み星データ（100個の明るい星）
-    private fun getEmbeddedStarsJson(): String = """
 {
   "version": "1.1",
   "description": "100 brightest stars catalog (magnitude < 4.5)",
@@ -146,26 +101,4 @@ actual class ResourceReader {
     {"id": "HIP91971", "name": "Sheliak", "raDegrees": 284.736, "decDegrees": 33.363, "magnitude": 3.52, "spectralType": "B7II"},
     {"id": "HIP99473", "name": "Sadalmelik", "raDegrees": 322.165, "decDegrees": -0.320, "magnitude": 2.95, "spectralType": "G2Ib"}
   ]
-}
-""".trimIndent()
-
-    // 埋め込み星座データ
-    private fun getEmbeddedConstellationsJson(): String = """
-{
-  "version": "1.0",
-  "description": "Major constellations",
-  "constellations": [
-    {"id": "Ori", "name": "Orion", "stars": ["HIP24436", "HIP25428", "HIP25336", "HIP26311", "HIP26727"]},
-    {"id": "UMa", "name": "Ursa Major", "stars": []},
-    {"id": "CMa", "name": "Canis Major", "stars": ["HIP32349"]},
-    {"id": "Gem", "name": "Gemini", "stars": ["HIP36850", "HIP7588"]},
-    {"id": "Leo", "name": "Leo", "stars": ["HIP49669"]},
-    {"id": "Vir", "name": "Virgo", "stars": ["HIP68702"]},
-    {"id": "Sco", "name": "Scorpius", "stars": ["HIP80763", "HIP86032"]},
-    {"id": "Aql", "name": "Aquila", "stars": ["HIP97649"]},
-    {"id": "Cyg", "name": "Cygnus", "stars": ["HIP102098"]},
-    {"id": "Cru", "name": "Crux", "stars": ["HIP62956", "HIP60718"]}
-  ]
-}
-""".trimIndent()
 }

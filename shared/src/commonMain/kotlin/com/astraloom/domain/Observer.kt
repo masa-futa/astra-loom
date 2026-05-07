@@ -1,5 +1,9 @@
 package com.astraloom.domain
 
+import com.astraloom.util.toRadians
+import com.astraloom.util.toDegrees
+import kotlin.math.*
+
 /**
  * Observer location on Earth (観測地点)
  *
@@ -16,12 +20,12 @@ data class Observer(
 ) {
     init {
         require(latitude in -HALF_PI..HALF_PI) { "Latitude must be in range [-π/2, π/2], got $latitude" }
-        require(longitude in -Math.PI..Math.PI) { "Longitude must be in range [-π, π], got $longitude" }
+        require(longitude in -PI..PI) { "Longitude must be in range [-π, π], got $longitude" }
         require(elevation >= -500.0) { "Elevation must be >= -500m (Dead Sea), got $elevation" }
     }
 
     companion object {
-        private const val HALF_PI = Math.PI / 2
+        private const val HALF_PI = PI / 2
 
         /**
          * Create Observer from degrees
@@ -32,8 +36,8 @@ data class Observer(
             elevationMeters: Double = 0.0
         ): Observer {
             return Observer(
-                Math.toRadians(latitudeDegrees),
-                Math.toRadians(longitudeDegrees),
+                latitudeDegrees.toRadians(),
+                longitudeDegrees.toRadians(),
                 elevationMeters
             )
         }
@@ -49,10 +53,10 @@ data class Observer(
     /**
      * Convert latitude to degrees
      */
-    fun latitudeToDegrees(): Double = Math.toDegrees(latitude)
+    fun latitudeToDegrees(): Double = latitude.toDegrees()
 
     /**
      * Convert longitude to degrees
      */
-    fun longitudeToDegrees(): Double = Math.toDegrees(longitude)
+    fun longitudeToDegrees(): Double = longitude.toDegrees()
 }

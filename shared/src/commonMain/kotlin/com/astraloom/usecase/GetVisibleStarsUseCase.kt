@@ -36,9 +36,21 @@ class GetVisibleStarsUseCase(
             // Get bright stars from repository
             val starsResult = starRepository.getStarsByMagnitude(maxMagnitude)
             val stars = starsResult.getOrThrow()
+            println("📚 Loaded ${stars.size} stars from repository (maxMag: $maxMagnitude)")
 
             // Calculate positions for all stars
-            val positions = astronomyEngine.calculateVisibleStars(stars, observer, time)
+            val allPositions = astronomyEngine.calculateStarPositions(stars, observer, time)
+            println("🔭 Calculated positions for ${allPositions.size} stars")
+
+            // Debug: show first 3 stars with their altitudes
+            allPositions.entries.take(3).forEach { (starId, position) ->
+                val star = stars.first { it.id == starId }
+                println("  - ${star.name ?: starId}: alt=${position.altitudeDegrees()}, visible=${position.isVisible()}")
+            }
+
+            // Filter only visible stars
+            val positions = allPositions.filter { (_, position) -> position.isVisible() }
+            println("✅ Filtered to ${positions.size} visible stars (above horizon)")
 
             // Convert to VisibleStar objects
             val visibleStars = positions.map { (starId, position) ->
@@ -53,6 +65,8 @@ class GetVisibleStarsUseCase(
 
             Result.success(visibleStars)
         } catch (e: Exception) {
+            println("❌ Error in GetVisibleStarsUseCase: ${e.message}")
+            e.printStackTrace()
             Result.failure(Exception("Failed to get visible stars: ${e.message}", e))
         }
     }

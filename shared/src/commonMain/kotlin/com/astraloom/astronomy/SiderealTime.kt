@@ -1,4 +1,6 @@
 package com.astraloom.astronomy
+import com.astraloom.util.toRadians
+import com.astraloom.util.toDegrees
 
 import kotlin.math.PI
 
@@ -39,7 +41,7 @@ object SiderealTime {
         gmstDegrees = normalizeDegrees(gmstDegrees)
 
         // Convert to radians
-        return Math.toRadians(gmstDegrees)
+        return (gmstDegrees).toRadians()
     }
 
     /**

@@ -1,0 +1,133 @@
+//
+//  ServiceProtocols.swift
+//  astra-loom
+//
+//  Service層のプロトコル定義
+//
+
+import Foundation
+import shared
+
+// MARK: - Service Protocol
+
+/// Astra Loom サービスのメインインターフェース
+protocol AstraLoomService {
+    /// 可視星を取得
+    func getVisibleStars(
+        observer: Observer,
+        time: Date,
+        maxMagnitude: Double
+    ) async throws -> [VisibleStar]
+
+    /// 星座を取得
+    func getConstellation(
+        constellationId: String,
+        observer: Observer,
+        time: Date
+    ) async throws -> ConstellationWithStars
+
+    /// 星を検索
+    func searchStars(query: String) async throws -> [Star]
+}
+
+// MARK: - Service Implementation
+
+/// AstraLoomServiceの実装
+final class AstraLoomServiceImpl: AstraLoomService {
+    private let manager: AstraLoomManager
+
+    init(manager: AstraLoomManager) {
+        self.manager = manager
+    }
+
+    /// 便利なイニシャライザ（デフォルト設定）
+    convenience init() {
+        let manager = ManagerFactory.shared.createDefault()
+        self.init(manager: manager)
+    }
+
+    func getVisibleStars(
+        observer: Observer,
+        time: Date,
+        maxMagnitude: Double
+    ) async throws -> [VisibleStar] {
+        let instant = time.toKotlinInstant()
+
+        // Kotlin suspend functionは直接awaitできる
+        let result = try await manager.stars.getVisibleStars(
+            observer: observer,
+            time: instant,
+            maxMagnitude: maxMagnitude
+        )
+
+        // Kotlin Resultの処理
+        if let stars = result.getOrNull() {
+            return Array(stars)
+        } else if let error = result.exceptionOrNull() {
+            throw KotlinError.kotlinException(error)
+        } else {
+            throw KotlinError.unknown
+        }
+    }
+
+    func getConstellation(
+        constellationId: String,
+        observer: Observer,
+        time: Date
+    ) async throws -> ConstellationWithStars {
+        let instant = time.toKotlinInstant()
+
+        let result = try await manager.constellations.getConstellation(
+            constellationId: constellationId,
+            observer: observer,
+            time: instant
+        )
+
+        if let constellation = result.getOrNull() {
+            return constellation
+        } else if let error = result.exceptionOrNull() {
+            throw KotlinError.kotlinException(error)
+        } else {
+            throw KotlinError.unknown
+        }
+    }
+
+    func searchStars(query: String) async throws -> [Star] {
+        let result = try await manager.stars.searchStars(query: query)
+
+        if let stars = result.getOrNull() {
+            return Array(stars)
+        } else if let error = result.exceptionOrNull() {
+            throw KotlinError.kotlinException(error)
+        } else {
+            throw KotlinError.unknown
+        }
+    }
+}
+
+// MARK: - Mock Service (テスト用)
+
+#if DEBUG
+final class MockAstraLoomService: AstraLoomService {
+    func getVisibleStars(
+        observer: Observer,
+        time: Date,
+        maxMagnitude: Double
+    ) async throws -> [VisibleStar] {
+        // モックデータを返す
+        return []
+    }
+
+    func getConstellation(
+        constellationId: String,
+        observer: Observer,
+        time: Date
+    ) async throws -> ConstellationWithStars {
+        throw KotlinError.unknown
+    }
+
+    func searchStars(query: String) async throws -> [Star] {
+        return []
+    }
+}
+#endif

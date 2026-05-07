@@ -1,5 +1,9 @@
 package com.astraloom.domain
 
+import com.astraloom.util.toRadians
+import com.astraloom.util.toDegrees
+import kotlin.math.*
+
 /**
  * Horizontal coordinate system (地平座標系)
  * Also known as Alt-Azimuth system
@@ -18,16 +22,16 @@ data class HorizontalCoordinate(
     }
 
     companion object {
-        private const val TWO_PI = 2 * Math.PI
-        private const val HALF_PI = Math.PI / 2
+        private const val TWO_PI = 2 * PI
+        private const val HALF_PI = PI / 2
 
         /**
          * Create from degrees
          */
         fun fromDegrees(altitudeDegrees: Double, azimuthDegrees: Double): HorizontalCoordinate {
             return HorizontalCoordinate(
-                Math.toRadians(altitudeDegrees),
-                Math.toRadians(azimuthDegrees)
+                altitudeDegrees.toRadians(),
+                azimuthDegrees.toRadians()
             )
         }
     }
@@ -35,12 +39,12 @@ data class HorizontalCoordinate(
     /**
      * Convert altitude to degrees
      */
-    fun altitudeToDegrees(): Double = Math.toDegrees(altitude)
+    fun altitudeToDegrees(): Double = altitude.toDegrees()
 
     /**
      * Convert azimuth to degrees
      */
-    fun azimuthToDegrees(): Double = Math.toDegrees(azimuth)
+    fun azimuthToDegrees(): Double = azimuth.toDegrees()
 
     /**
      * Check if the object is visible (above horizon)
