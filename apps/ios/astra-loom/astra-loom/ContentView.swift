@@ -12,12 +12,14 @@ struct ContentView: View {
     @State private var showLocationPicker = false
     @State private var showTimeControl = false
     @State private var showFOVControl = false
+    @State private var showSettings = false
     @State private var selectedStar: StarViewModel?
     @State private var isDragging = false
     @State private var lastDragValue: CGSize = .zero
     @State private var isTimeDragging = false
     @State private var lastTimeDragValue: CGFloat = 0
     @State private var lastStarUpdateTime: Date = Date()
+    @State private var showTutorial = false
 
     init() {
         _viewModel = StateObject(wrappedValue: SkyViewModel(service: AstraLoomService()))
@@ -98,6 +100,16 @@ struct ContentView: View {
                     Spacer()
 
                     HStack(spacing: 12) {
+                        // 設定ボタン
+                        Button {
+                            showSettings = true
+                        } label: {
+                            Image(systemName: "gearshape.fill")
+                                .padding(8)
+                                .background(.ultraThinMaterial)
+                                .cornerRadius(12)
+                        }
+
                         // 観測地点ボタン
                         Button {
                             showLocationPicker = true
@@ -243,6 +255,11 @@ struct ContentView: View {
                 }
             )
         }
+        .sheet(isPresented: $showSettings) {
+            SettingsView(onShowTutorial: {
+                showTutorial = true
+            })
+        }
         .overlay {
             // 2本指ドラッグで時間変更
             TwoFingerDragGestureView(
@@ -278,6 +295,21 @@ struct ContentView: View {
             }
         }
         .animation(.easeInOut(duration: 0.5), value: viewModel.gradient)
+        .fullScreenCover(isPresented: $showTutorial) {
+            TutorialView(onDismiss: {
+                showTutorial = false
+                UserDefaults.standard.set(true, forKey: "hasSeenTutorial")
+            })
+        }
+        .onAppear {
+            // 初回起動チェック
+            let hasSeenTutorial = UserDefaults.standard.bool(forKey: "hasSeenTutorial")
+            if !hasSeenTutorial {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    showTutorial = true
+                }
+            }
+        }
         .task {
             if screenSize != .zero {
                 await loadStars()
