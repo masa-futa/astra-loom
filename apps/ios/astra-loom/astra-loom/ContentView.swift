@@ -28,7 +28,12 @@ struct ContentView: View {
     var body: some View {
         ZStack {
             // Starry sky canvas
-            SkyCanvasView(stars: viewModel.stars, gradient: viewModel.gradient)
+            SkyCanvasView(
+                stars: viewModel.stars,
+                gradient: viewModel.gradient,
+                constellations: viewModel.constellations,
+                showConstellations: viewModel.showConstellations
+            )
                 .background(
                     GeometryReader { geometry in
                         Color.clear
@@ -125,6 +130,16 @@ struct ContentView: View {
                             .padding(.vertical, 6)
                             .background(.ultraThinMaterial)
                             .cornerRadius(12)
+                        }
+
+                        // 星座表示切り替えボタン
+                        Button {
+                            viewModel.showConstellations.toggle()
+                        } label: {
+                            Image(systemName: viewModel.showConstellations ? "star.circle.fill" : "star.circle")
+                                .padding(8)
+                                .background(.ultraThinMaterial)
+                                .cornerRadius(12)
                         }
 
                         // 視野角ボタン

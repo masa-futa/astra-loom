@@ -1,9 +1,12 @@
 import SwiftUI
+import shared
 
 /// Canvas view for rendering the starry sky
 struct SkyCanvasView: View {
     let stars: [StarViewModel]
     let gradient: [Color]
+    let constellations: [ConstellationWithStars]
+    let showConstellations: Bool
 
     var body: some View {
         GeometryReader { geometry in
@@ -18,6 +21,11 @@ struct SkyCanvasView: View {
 
                 // Stars canvas
                 Canvas { context, size in
+                    // Draw constellation lines first (behind stars)
+                    if showConstellations {
+                        drawConstellationLines(context: context, size: size)
+                    }
+
                     for star in stars {
                         // Only draw stars within the visible area
                         guard star.x >= 0 && star.x <= size.width &&
@@ -67,13 +75,91 @@ struct SkyCanvasView: View {
                             context.fill(corePath, with: .color(.white.opacity(0.8)))
                         }
                     }
+
+                    // Draw constellation labels on top
+                    if showConstellations {
+                        drawConstellationLabels(context: context, size: size)
+                    }
                 }
             }
+        }
+    }
+
+    // MARK: - Private Methods
+
+    /// Draw constellation lines
+    private func drawConstellationLines(context: GraphicsContext, size: CGSize) {
+        // Create a dictionary to quickly look up star positions by HIP ID
+        let starPositions = Dictionary(uniqueKeysWithValues: stars.map { ($0.visibleStar.star.id, CGPoint(x: $0.x, y: $0.y)) })
+
+        for constellation in constellations {
+            guard !constellation.constellation.lines.isEmpty else { continue }
+
+            for line in constellation.constellation.lines {
+                // Get positions of both stars in the line
+                guard let fromPos = starPositions[line.first],
+                      let toPos = starPositions[line.second] else {
+                    continue
+                }
+
+                // Only draw if both stars are visible on screen
+                guard fromPos.x >= 0 && fromPos.x <= size.width &&
+                      fromPos.y >= 0 && fromPos.y <= size.height &&
+                      toPos.x >= 0 && toPos.x <= size.width &&
+                      toPos.y >= 0 && toPos.y <= size.height else {
+                    continue
+                }
+
+                // Draw the line
+                var path = Path()
+                path.move(to: fromPos)
+                path.addLine(to: toPos)
+
+                context.stroke(
+                    path,
+                    with: .color(.white.opacity(0.3)),
+                    lineWidth: 1.0
+                )
+            }
+        }
+    }
+
+    /// Draw constellation labels
+    private func drawConstellationLabels(context: GraphicsContext, size: CGSize) {
+        // Create a dictionary to quickly look up star positions by HIP ID
+        let starPositions = Dictionary(uniqueKeysWithValues: stars.map { ($0.visibleStar.star.id, CGPoint(x: $0.x, y: $0.y)) })
+
+        for constellation in constellations {
+            guard !constellation.constellation.starIds.isEmpty else { continue }
+
+            // Calculate center position of the constellation
+            var visibleStars: [CGPoint] = []
+            for starId in constellation.constellation.starIds {
+                if let pos = starPositions[starId],
+                   pos.x >= 0 && pos.x <= size.width &&
+                   pos.y >= 0 && pos.y <= size.height {
+                    visibleStars.append(pos)
+                }
+            }
+
+            guard !visibleStars.isEmpty else { continue }
+
+            // Calculate average position
+            let centerX = visibleStars.map { $0.x }.reduce(0, +) / CGFloat(visibleStars.count)
+            let centerY = visibleStars.map { $0.y }.reduce(0, +) / CGFloat(visibleStars.count)
+            let center = CGPoint(x: centerX, y: centerY)
+
+            // Draw constellation name
+            let text = Text(constellation.constellation.nameJa)
+                .font(.caption)
+                .foregroundColor(.white.opacity(0.7))
+
+            context.draw(text, at: center)
         }
     }
 }
 
 #Preview {
     let gradient = SkyViewModel.createGradient(for: Date(), sunAltitude: -20.0)
-    SkyCanvasView(stars: [], gradient: gradient)
+    SkyCanvasView(stars: [], gradient: gradient, constellations: [], showConstellations: true)
 }

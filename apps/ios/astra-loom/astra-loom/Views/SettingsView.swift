@@ -4,10 +4,26 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     let onShowTutorial: () -> Void
+    @AppStorage("showConstellations") private var showConstellations = false
 
     var body: some View {
         NavigationView {
             List {
+                Section("表示設定") {
+                    Toggle(isOn: $showConstellations) {
+                        HStack {
+                            Image(systemName: "star.circle.fill")
+                                .foregroundColor(.yellow)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("星座線を表示")
+                                Text("星座の形を線で結んで表示します")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    }
+                }
+
                 Section("操作ガイド") {
                     Button {
                         dismiss()

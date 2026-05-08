@@ -21,6 +21,13 @@ final class SkyViewModel: ObservableObject {
     // ビューポート設定
     @Published var viewportState = ViewportState()
 
+    // 表示設定
+    @Published var showConstellations: Bool {
+        didSet {
+            UserDefaults.standard.set(showConstellations, forKey: "showConstellations")
+        }
+    }
+
     // 星データのキャッシュ（ビューポート変更時の再計算用）
     private var visibleStarsData: [VisibleStar] = []
     private var currentScreenSize: CGSize = .zero
@@ -30,6 +37,7 @@ final class SkyViewModel: ObservableObject {
     init(service: AstraLoomService) {
         self.service = service
         self.gradient = Self.createGradient(for: Date(), sunAltitude: 0.0)
+        self.showConstellations = UserDefaults.standard.bool(forKey: "showConstellations")
     }
 
     /// 観測地点を変更（その地点の現在時刻に切り替え）
