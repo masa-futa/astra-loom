@@ -6,6 +6,7 @@ import shared
 @MainActor
 final class SkyViewModel: ObservableObject {
     @Published var stars: [StarViewModel] = []
+    @Published var constellations: [ConstellationWithStars] = []
     @Published var gradient: [Color] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
@@ -119,6 +120,20 @@ final class SkyViewModel: ObservableObject {
             }
 
             print("✅ Converted to \(self.stars.count) star view models")
+
+            // Load constellations
+            do {
+                let constellations = try await service.getVisibleConstellations(
+                    observer: observer,
+                    time: time
+                )
+                self.constellations = constellations
+                print("✅ Loaded \(constellations.count) visible constellations")
+            } catch {
+                print("⚠️ Warning: Failed to load constellations: \(error.localizedDescription)")
+                // Don't fail the whole load if constellations fail
+                self.constellations = []
+            }
 
             // Update gradient based on sun altitude
             self.gradient = Self.createGradient(for: time, sunAltitude: sunPosition.altitudeDegrees)

@@ -40,6 +40,8 @@ struct ContentView: View {
                             }
                     }
                 )
+
+            Color.clear
                 .contentShape(Rectangle())
                 .simultaneousGesture(
                     DragGesture(minimumDistance: 10)
@@ -286,11 +288,15 @@ struct ContentView: View {
         }
         .overlay(alignment: .trailing) {
             if let star = selectedStar {
-                StarDetailView(star: star, onDismiss: {
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
-                        selectedStar = nil
+                StarDetailView(
+                    star: star,
+                    constellations: viewModel.constellations,
+                    onDismiss: {
+                        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+                            selectedStar = nil
+                        }
                     }
-                })
+                )
                 .transition(.move(edge: .trailing))
             }
         }

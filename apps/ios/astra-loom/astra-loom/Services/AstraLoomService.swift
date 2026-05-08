@@ -42,6 +42,28 @@ final class AstraLoomService {
         }
     }
 
+    /// 可視星座を取得
+    func getVisibleConstellations(
+        observer: Observer,
+        time: Date = Date()
+    ) async throws -> [ConstellationWithStars] {
+        print("🚀 AstraLoomService: Getting visible constellations...")
+
+        let instant = time.toKotlinInstant()
+
+        do {
+            let constellations = try await bridge.getVisibleConstellations(
+                observer: observer,
+                time: instant
+            )
+            print("✅ AstraLoomService: Got \(constellations.count) visible constellations")
+            return constellations
+        } catch {
+            print("❌ AstraLoomService: Error getting constellations: \(error.localizedDescription)")
+            throw error
+        }
+    }
+
     /// 太陽の位置を取得
     func getSunPosition(
         observer: Observer,

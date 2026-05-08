@@ -4,6 +4,7 @@ import shared
 /// 星の詳細情報ビュー
 struct StarDetailView: View {
     let star: StarViewModel
+    let constellations: [ConstellationWithStars]
     let onDismiss: () -> Void
 
     var body: some View {
@@ -150,6 +151,36 @@ struct StarDetailView: View {
 
                     Divider()
 
+                    // 所属する星座
+                    if !belongingConstellations.isEmpty {
+                        VStack(alignment: .leading, spacing: 8) {
+                            Label("所属する星座", systemImage: "sparkles")
+                                .font(.headline)
+
+                            VStack(alignment: .leading, spacing: 8) {
+                                ForEach(belongingConstellations, id: \.constellation.id) { constellation in
+                                    HStack {
+                                        Image(systemName: "star.circle")
+                                            .foregroundColor(.cyan)
+
+                                        Text(constellation.constellation.name)
+                                            .font(.body)
+
+                                        Spacer()
+
+                                        // 星座内の星の数
+                                        Text("\(constellation.stars.count)個の星")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    .padding(.vertical, 4)
+                                }
+                            }
+                        }
+
+                        Divider()
+                    }
+
                     // 天球座標
                     VStack(alignment: .leading, spacing: 8) {
                         Label("天球座標", systemImage: "globe.asia.australia")
@@ -185,6 +216,13 @@ struct StarDetailView: View {
     }
 
     // MARK: - Computed Properties
+
+    /// この星が所属する星座
+    private var belongingConstellations: [ConstellationWithStars] {
+        constellations.filter { constellation in
+            constellation.constellation.starIds.contains(star.visibleStar.star.id)
+        }
+    }
 
     /// 星の物理的特徴
     private var starProperties: StarProperties {
@@ -309,6 +347,7 @@ struct StarDetailView: View {
             screenSize: CGSize(width: 400, height: 800),
             viewportState: ViewportState()
         ),
+        constellations: [],
         onDismiss: {}
     )
 }

@@ -40,6 +40,15 @@ class SwiftBridge(private val manager: AstraLoomManager) {
     }
 
     @Throws(Exception::class)
+    suspend fun getVisibleConstellations(
+        observer: Observer,
+        time: Instant
+    ): List<ConstellationWithStars> {
+        return manager.constellations.getVisibleConstellations(observer, time)
+            .getOrThrow()
+    }
+
+    @Throws(Exception::class)
     suspend fun searchStars(query: String): List<SearchResult> {
         return manager.stars.searchStars(query)
             .getOrThrow()
