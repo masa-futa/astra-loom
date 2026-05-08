@@ -145,16 +145,32 @@ val orion = constellationUseCase.execute("Ori", Observer.Tokyo, Clock.System.now
   - Celestial coordinates (RA/Dec)
 - **UX**: Right slide-in panel, tap-to-dismiss overlay
 
-### In Progress
-- Phase 3 features planning (swipe navigation, constellation lines, search)
-- Integration tests for data layer
+### Completed - Phase 3
+- ✅ Interactive viewport with swipe gestures
+- ✅ Field of View (FOV) control
+- ✅ Compass display with direction indicators
+- ✅ Two-finger time scrubbing
+- ✅ Tutorial and settings screens
+- ✅ Constellation membership display in star details
 
-### Upcoming
+### Next - Phase 4: Constellation Learning
+See [Feature Roadmap](docs/feature-roadmap.md) for comprehensive planning.
+
+**Short-term priorities:**
+- Constellation lines rendering (12 zodiac + 20 major constellations)
+- Constellation mythology and descriptions
+- Star details expansion (50 famous stars with descriptions)
+
+**Medium-term:**
+- Planet calculations and display (8 planets)
+- Constellation learning mode
+- Deep sky objects (Messier catalog)
+
+### Future
+- Moon phases and calculations
+- Astronomical events (meteor showers, eclipses)
+- Educational content and quiz mode
 - Android UI implementation (Jetpack Compose)
-- Swipe gesture for viewing direction change
-- Constellation rendering with lines
-- Star/constellation search functionality
-- Star descriptions and mythology (Phase 3/4)
 - API server implementation
 
 ## Documentation
@@ -169,6 +185,9 @@ val orion = constellationUseCase.execute("Ori", Observer.Tokyo, Clock.System.now
 - [Astronomy Engine Design](docs/astronomy-engine-design.md) - Mathematical formulas and calculations
 - [Astronomy Engine Implementation](docs/astronomy-engine-implementation.md) - Implementation and validation strategy
 - [UI Specification](docs/ui-specification.md) - Screen definitions and UX design
+
+### Planning Documentation
+- [Feature Roadmap](docs/feature-roadmap.md) - Comprehensive feature roadmap (constellations, planets, galaxies, educational features)
 
 ## License
 
