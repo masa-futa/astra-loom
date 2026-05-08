@@ -97,8 +97,12 @@ struct SkyCanvasView: View {
 
             for line in constellation.constellation.lines {
                 // Get positions of both stars in the line
-                guard let fromPos = starPositions[line.first],
-                      let toPos = starPositions[line.second] else {
+                // Convert NSString to String for Kotlin interop
+                let fromId = line.first as? String ?? String(line.first ?? "")
+                let toId = line.second as? String ?? String(line.second ?? "")
+
+                guard let fromPos = starPositions[fromId],
+                      let toPos = starPositions[toId] else {
                     continue
                 }
 
