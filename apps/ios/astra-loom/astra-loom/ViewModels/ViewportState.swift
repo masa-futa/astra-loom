@@ -11,7 +11,7 @@ final class ViewportState: ObservableObject {
     @Published var centerAzimuth: Double = 180.0
 
     /// Field of view in degrees (30° to 180°)
-    @Published var fieldOfView: Double = 120.0
+    @Published var fieldOfView: Double = 90.0
 
     /// Update altitude with clamping
     func updateAltitude(_ delta: Double) {

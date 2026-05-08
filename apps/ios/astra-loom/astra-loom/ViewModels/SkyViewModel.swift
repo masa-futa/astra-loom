@@ -37,7 +37,12 @@ final class SkyViewModel: ObservableObject {
     init(service: AstraLoomService) {
         self.service = service
         self.gradient = Self.createGradient(for: Date(), sunAltitude: 0.0)
-        self.showConstellations = UserDefaults.standard.bool(forKey: "showConstellations")
+        // Check if user has set a preference, otherwise default to true
+        if UserDefaults.standard.object(forKey: "showConstellations") == nil {
+            self.showConstellations = true
+        } else {
+            self.showConstellations = UserDefaults.standard.bool(forKey: "showConstellations")
+        }
     }
 
     /// 観測地点を変更（その地点の現在時刻に切り替え）
